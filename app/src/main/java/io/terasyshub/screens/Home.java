@@ -17,9 +17,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
 import io.terasyshub.R;
+import io.terasyshub.controllers.AuthController;
 
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private AuthController authController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,20 @@ public class Home extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        startActivity(new Intent(this, Login.class));
+        //Initialize
+        authController = AuthController.getInstance();
+
+        //Actions
+        checkAuthentication();
+    }
+
+    private void checkAuthentication() {
+        if(!authController.checkAuth()){
+            startActivity(new Intent(this, Login.class));
+            finish();
+        } else {
+            //Fetch Data
+        }
     }
 
     @Override
@@ -71,7 +87,10 @@ public class Home extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_logout) {
+            authController.logout();
+            startActivity(new Intent(Home.this, Login.class));
+            finish();
             return true;
         }
 

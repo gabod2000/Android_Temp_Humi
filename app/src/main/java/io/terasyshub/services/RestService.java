@@ -36,11 +36,10 @@ public class RestService {
     }
 
     public void Authenticate(final String email, final String password, final AuthenticationListener authenticationListener){
-        Log.e("TerasysLogTe", email+password);
         StringRequest request = new StringRequest(Request.Method.POST, API.login, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.e("TerasysLog", response);
+                authenticationListener.onResponse(response);
             }
         }, new Response.ErrorListener() {
             @Override

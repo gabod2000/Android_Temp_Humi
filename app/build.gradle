@@ -31,6 +31,9 @@ dependencies {
     //REST
     implementation 'com.android.volley:volley:1.1.1'
 
+    //Util
+    implementation 'com.pixplicity.easyprefs:library:1.9.0'
+
     //Test
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

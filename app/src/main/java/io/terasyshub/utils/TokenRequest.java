@@ -5,16 +5,17 @@ import android.support.annotation.Nullable;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
+import com.pixplicity.easyprefs.library.Prefs;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class TokenRequest extends StringRequest {
-    private String token;
+import io.terasyshub.constants.APP;
 
-    public TokenRequest(int method, String url, String token, Response.Listener<String> listener, @Nullable Response.ErrorListener errorListener) {
+public class TokenRequest extends StringRequest {
+
+    public TokenRequest(int method, String url, Response.Listener<String> listener, @Nullable Response.ErrorListener errorListener) {
         super(method, url, listener, errorListener);
-        this.token = token;
     }
 
     @Override
@@ -27,7 +28,7 @@ public class TokenRequest extends StringRequest {
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String, String> headers = new HashMap<String, String>();
-        String auth = "JWT "+token;
+        String auth = "JWT "+ Prefs.getString(APP.PREF_TOKEN, "");
         headers.put("Authorization", auth);
         return headers;
     }

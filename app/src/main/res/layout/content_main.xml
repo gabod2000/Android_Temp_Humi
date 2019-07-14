@@ -17,6 +17,7 @@
 
 
     <Spinner
+        android:id="@+id/home_devices"
         android:layout_width="match_parent"
         android:layout_height="30dp">
 

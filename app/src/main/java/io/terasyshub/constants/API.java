@@ -8,4 +8,6 @@ public class API {
     public static String login = BASE_URL+"login";
     public static String logout = BASE_URL+"logout";
 
+    public static String devices = BASE_URL+"devices";
+
 }

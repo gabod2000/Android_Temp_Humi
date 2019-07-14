@@ -4,24 +4,32 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
-import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
+import java.util.List;
 
 import io.terasyshub.R;
 import io.terasyshub.controllers.AuthController;
+import io.terasyshub.models.Device;
+import io.terasyshub.services.RestService;
+import io.terasyshub.utils.TerasysAlert;
 
 public class Home extends AppCompatActivity  {
 
     private AuthController authController;
+    private RestService restService;
+
+    private Spinner devicesSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,22 +37,18 @@ public class Home extends AppCompatActivity  {
         setContentView(R.layout.home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        //Casting
+        devicesSpinner = (Spinner)findViewById(R.id.home_devices);
+
         //Initialize
         authController = AuthController.getInstance();
+        restService  = RestService.getInstance(this);
 
         //Actions
         checkAuthentication();
@@ -56,7 +60,25 @@ public class Home extends AppCompatActivity  {
             finish();
         } else {
             //Fetch Data
+            fetchDevices();
         }
+    }
+
+    private void fetchDevices() {
+        restService.getDevices(new RestService.DevicesRESTCallback() {
+            @Override
+            public void onResponse(List<Device> devices) {
+                ArrayAdapter<Device> adapter = new ArrayAdapter<Device>(getApplicationContext(),  android.R.layout.simple_spinner_dropdown_item, devices);
+                adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item);
+                devicesSpinner.setAdapter(adapter);
+            }
+
+            @Override
+            public void onError(String message) {
+                TerasysAlert.show(message, false, Home.this);
+            }
+
+        });
     }
 
     @Override

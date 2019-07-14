@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.Map;
 import io.terasyshub.constants.API;
 import io.terasyshub.controllers.AuthController;
 import io.terasyshub.models.Device;
+import io.terasyshub.models.DeviceData;
 import io.terasyshub.screens.Login;
 import io.terasyshub.utils.Mapper;
 import io.terasyshub.utils.TokenRequest;
@@ -118,6 +120,83 @@ public class RestService {
         requestQueue.add(tokenRequest);
     }
 
+    public void getDeviceHumidityData(String deviceMac, final DeviceDataRESTCallback devicesRESTCallback) {
+        TokenRequest tokenRequest = new TokenRequest(Request.Method.GET, API.deviceHumidity+"/"+deviceMac, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                List<DeviceData> deviceDataList = new ArrayList<>();
+                try {
+                    JSONArray jsonArray = new JSONArray(response);
+                    for(int x=0; x<jsonArray.length(); x++){
+                        JSONObject deviceDataJSON = jsonArray.getJSONObject(x);
+                        deviceDataList.add(Mapper.JSONtoDeviceData(deviceDataJSON));
+                    }
+                    Collections.reverse(deviceDataList);
+                    devicesRESTCallback.onResponse(deviceDataList);
+                } catch (Exception e){
+                    devicesRESTCallback.onError("Something went wrong");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                if (networkResponse != null && networkResponse.data != null) {
+                    String jsonError = new String(networkResponse.data);
+                    devicesRESTCallback.onError(jsonError);
+                }
+
+                if(error.networkResponse.statusCode == 401) {
+                    authController.logout();
+                    context.startActivity(new Intent(context, Login.class));
+                    ((Activity)context).finish();
+                }
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(tokenRequest);
+    }
+
+    public void getDeviceTemperatureData(String deviceMac, final DeviceDataRESTCallback devicesRESTCallback) {
+        TokenRequest tokenRequest = new TokenRequest(Request.Method.GET, API.deviceTemperature+"/"+deviceMac, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                List<DeviceData> deviceDataList = new ArrayList<>();
+                try {
+                    JSONArray jsonArray = new JSONArray(response);
+                    for(int x=0; x<jsonArray.length(); x++){
+                        JSONObject deviceDataJSON = jsonArray.getJSONObject(x);
+                        deviceDataList.add(Mapper.JSONtoDeviceData(deviceDataJSON));
+                    }
+                    Collections.reverse(deviceDataList);
+
+                    devicesRESTCallback.onResponse(deviceDataList);
+                } catch (Exception e){
+                    devicesRESTCallback.onError("Something went wrong");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NetworkResponse networkResponse = error.networkResponse;
+                if (networkResponse != null && networkResponse.data != null) {
+                    String jsonError = new String(networkResponse.data);
+                    devicesRESTCallback.onError(jsonError);
+                }
+
+                if(error.networkResponse.statusCode == 401) {
+                    authController.logout();
+                    context.startActivity(new Intent(context, Login.class));
+                    ((Activity)context).finish();
+                }
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(tokenRequest);
+    }
+
 
 
 
@@ -130,6 +209,11 @@ public class RestService {
 
     public interface DevicesRESTCallback {
         void onResponse(List<Device> devices);
+        void onError(String message);
+    }
+
+    public interface DeviceDataRESTCallback {
+        void onResponse(List<DeviceData> dataList);
         void onError(String message);
     }
 

@@ -12,4 +12,7 @@
     <!--colros for card-->
     <color name="whiteCardColor">#fff</color>
 
+    <color name="negative">#f44336</color>
+    <color name="positive">#8BC34A</color>
+
 </resources>

@@ -97,7 +97,7 @@ public class Home extends AppCompatActivity  {
             @Override
             public void onResponse(final List<Device> devices) {
                 ArrayAdapter<Device> adapter = new ArrayAdapter<Device>(getApplicationContext(),  android.R.layout.simple_spinner_dropdown_item, devices);
-                adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item);
+                adapter.setDropDownViewResource( R.layout.spinner_item);
                 devicesSpinner.setAdapter(adapter);
 
 
@@ -152,6 +152,7 @@ public class Home extends AppCompatActivity  {
                 humChart.getDescription().setEnabled(false);
                 humChart.invalidate();
 
+
             }
 
             @Override
@@ -174,8 +175,6 @@ public class Home extends AppCompatActivity  {
                     SimpleDateFormat sdf = new SimpleDateFormat("dd MMM hh:mm aa");
                     Date netDate = (new Date(dataUnit.getTimestamp()* 1000L));
                     xAxisLabels.add(sdf.format(netDate));
-
-                    Log.e("Terasys", sdf.format(netDate));
                 }
 
                 LineDataSet setComp1 = new LineDataSet(entries, "Temperature");
@@ -191,7 +190,7 @@ public class Home extends AppCompatActivity  {
                 tempChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xAxisLabels));
                 tempChart.getXAxis().setLabelRotationAngle(90);
                 tempChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-                tempChart.getXAxis().setLabelCount(entries.size());
+                tempChart.getXAxis().setLabelCount(xAxisLabels.size(), true);
                 tempChart.setData(data);
                 tempChart.getLegend().setEnabled(false);
                 tempChart.getDescription().setEnabled(false);

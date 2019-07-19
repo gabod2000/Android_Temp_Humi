@@ -54,8 +54,7 @@ public class Home extends AppCompatActivity  {
     private RestService restService;
 
     private Spinner devicesSpinner;
-    private BarChart humChart;
-    private LineChart tempChart;
+    private LineChart tempChart,humChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +70,7 @@ public class Home extends AppCompatActivity  {
 
         //Casting
         devicesSpinner = (Spinner)findViewById(R.id.home_devices);
-        humChart = (BarChart)findViewById(R.id.humidityChart);
+        humChart = (LineChart)findViewById(R.id.humidityChart);
         tempChart = (LineChart)findViewById(R.id.temperatureChart);
 
         //Initialize
@@ -128,7 +127,7 @@ public class Home extends AppCompatActivity  {
             @Override
             public void onResponse(List<DeviceData> dataList) {
 
-                List<BarEntry> entries = new ArrayList<>();
+                List<Entry> entries = new ArrayList<>();
                 List<String> xAxisLabels = new ArrayList<>();
 
                 for(int x=0; x<dataList.size(); x++){
@@ -140,13 +139,21 @@ public class Home extends AppCompatActivity  {
                     xAxisLabels.add(sdf.format(netDate));
                 }
 
-                BarDataSet set1 = new BarDataSet(entries, "Humidity");
-                BarData data = new BarData(set1);
-                data.setBarWidth(0.4f);
+
+                LineDataSet setComp1 = new LineDataSet(entries, "Humidity");
+                setComp1.setAxisDependency(YAxis.AxisDependency.LEFT);
+                setComp1.setLineWidth(2f);
+                setComp1.setColor(Color.BLUE);
+                setComp1.setCircleColor(Color.BLUE);
+
+                List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+                dataSets.add(setComp1);
+
+                LineData data = new LineData(dataSets);
                 humChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xAxisLabels));
                 humChart.getXAxis().setLabelRotationAngle(90);
                 humChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-                humChart.getXAxis().setLabelCount(entries.size());
+                humChart.getXAxis().setLabelCount(xAxisLabels.size(), true);
                 humChart.setData(data);
                 humChart.getLegend().setEnabled(false);
                 humChart.getDescription().setEnabled(false);

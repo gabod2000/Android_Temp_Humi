@@ -95,7 +95,7 @@ public class Home extends AppCompatActivity  {
         restService.getDevices(new RestService.DevicesRESTCallback() {
             @Override
             public void onResponse(final List<Device> devices) {
-                ArrayAdapter<Device> adapter = new ArrayAdapter<Device>(getApplicationContext(),  android.R.layout.simple_spinner_dropdown_item, devices);
+                ArrayAdapter<Device> adapter = new ArrayAdapter<Device>(getApplicationContext(),  R.layout.spinner, devices);
                 adapter.setDropDownViewResource( R.layout.spinner_item);
                 devicesSpinner.setAdapter(adapter);
 

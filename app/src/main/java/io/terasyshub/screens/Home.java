@@ -30,6 +30,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.DefaultValueFormatter;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
@@ -142,18 +143,22 @@ public class Home extends AppCompatActivity  {
 
                 LineDataSet setComp1 = new LineDataSet(entries, "Humidity");
                 setComp1.setAxisDependency(YAxis.AxisDependency.LEFT);
-                setComp1.setLineWidth(2f);
+                setComp1.setValueFormatter(new DefaultValueFormatter(0));
+                setComp1.setLineWidth(1f);
                 setComp1.setColor(Color.BLUE);
-                setComp1.setCircleColor(Color.BLUE);
+                setComp1.setDrawCircles(false);
 
                 List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
                 dataSets.add(setComp1);
 
                 LineData data = new LineData(dataSets);
+                data.setDrawValues(false);
                 humChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xAxisLabels));
                 humChart.getXAxis().setLabelRotationAngle(90);
                 humChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
                 humChart.getXAxis().setLabelCount(xAxisLabels.size(), true);
+
+
                 humChart.setData(data);
                 humChart.getLegend().setEnabled(false);
                 humChart.getDescription().setEnabled(false);
@@ -186,14 +191,16 @@ public class Home extends AppCompatActivity  {
 
                 LineDataSet setComp1 = new LineDataSet(entries, "Temperature");
                 setComp1.setAxisDependency(YAxis.AxisDependency.LEFT);
-                setComp1.setLineWidth(2f);
+                setComp1.setLineWidth(1f);
                 setComp1.setColor(Color.RED);
                 setComp1.setCircleColor(Color.RED);
+                setComp1.setDrawCircles(false);
 
                 List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
                 dataSets.add(setComp1);
 
                 LineData data = new LineData(dataSets);
+                data.setDrawValues(false);
                 tempChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xAxisLabels));
                 tempChart.getXAxis().setLabelRotationAngle(90);
                 tempChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
